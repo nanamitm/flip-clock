@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect width="256" height="256" rx="56" fill="#0b0c10"/>
+
+  <!-- Upper leaf -->
+  <path d="M40 68a16 16 0 0 1 16-16h144a16 16 0 0 1 16 16v54H40z" fill="#2b3040"/>
+  <!-- Lower leaf -->
+  <path d="M40 134h176v54a16 16 0 0 1-16 16H56a16 16 0 0 1-16-16z" fill="#1a1d27"/>
+  <!-- Fold line -->
+  <rect x="40" y="122" width="176" height="12" fill="#0b0c10"/>
+
+  <!-- Digits, clipped to each leaf so they split on the fold -->
+  <g font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="104" font-weight="700"
+     text-anchor="middle" fill="#f3f5ff">
+    <text x="128" y="164">10</text>
+  </g>
+
+  <!-- Accent tick marking the axle -->
+  <circle cx="128" cy="128" r="7" fill="#5b8def"/>
+</svg>

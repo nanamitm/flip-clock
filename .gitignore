@@ -1,0 +1,44 @@
+# --- Build output -----------------------------------------------------------
+build/
+build-*/
+out/
+install/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.user
+
+# Local-only CMake preset overrides. CMakePresets.json is committed; this file
+# is where a developer pins their own Qt/SDK paths.
+CMakeUserPresets.json
+
+# --- Qt / Android -----------------------------------------------------------
+*.qmlc
+*.jsc
+.qmlls.ini
+.qtc_clangd/
+android-build/
+local.properties
+*.keystore
+*.jks
+key.properties
+
+# Gradle
+.gradle/
+gradle.properties
+
+# --- Editors and IDEs -------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+# --- Agent / tooling local state --------------------------------------------
+# .claude/settings.json is shared; the .local variant is per-developer.
+.claude/settings.local.json
+
+# --- OS ---------------------------------------------------------------------
+Thumbs.db
+desktop.ini
+.DS_Store

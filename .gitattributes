@@ -1,0 +1,30 @@
+# Normalise line endings in the repository; check out native on each platform.
+* text=auto
+
+# Windows-only scripts and batch files stay CRLF so they run from Explorer.
+*.ps1   text eol=crlf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Shell scripts must keep LF even when checked out on Windows.
+*.sh    text eol=lf
+
+# Source and config are text.
+*.cpp   text
+*.h     text
+*.qml   text
+*.cmake text
+*.json  text
+*.md    text
+*.xml   text
+*.yml   text
+*.svg   text
+
+# Binary assets: never touch, and do not attempt a textual diff.
+*.png   binary
+*.jpg   binary
+*.wav   binary
+*.ico   binary
+*.ttf   binary
+*.otf   binary
+*.apk   binary

@@ -1,0 +1,126 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# The CMake presets resolve Qt through QT_DIR_DESKTOP / QT_DIR_ANDROID_*.
+# install-qt-action exports QT_ROOT_DIR for the kit it just installed, so each
+# install step is followed by a step that copies it into the variable the
+# presets expect. Installing two kits in one job is why the copy is needed:
+# the second install overwrites QT_ROOT_DIR.
+env:
+  QT_VERSION: '6.9.*'
+
+jobs:
+  windows:
+    name: Windows (MSVC x64)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Install Qt (desktop)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtmultimedia
+
+      - name: Point the presets at the Qt kit
+        shell: pwsh
+        run: echo "QT_DIR_DESKTOP=$env:QT_ROOT_DIR" >> $env:GITHUB_ENV
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure
+        run: cmake --preset windows-msvc-release
+
+      - name: Build
+        run: cmake --build --preset windows-msvc-release
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: flipclock-windows-x64
+          path: build/windows-msvc-release/appFlipClock.exe
+          if-no-files-found: error
+
+  android:
+    name: Android (arm64-v8a)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      # androiddeployqt shells out to Gradle, and the Android Gradle Plugin
+      # does not support JDK 22 or newer.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Qt (host, for moc/qmlcachegen/androiddeployqt)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: linux
+          target: desktop
+          arch: linux_gcc_64
+          modules: qtmultimedia
+
+      - name: Remember the host kit
+        run: echo "QT_DIR_DESKTOP=$QT_ROOT_DIR" >> "$GITHUB_ENV"
+
+      - name: Install Qt (android_arm64_v8a)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: linux
+          target: android
+          arch: android_arm64_v8a
+          modules: qtmultimedia
+
+      - name: Remember the Android kit
+        run: echo "QT_DIR_ANDROID_ARM64=$QT_ROOT_DIR" >> "$GITHUB_ENV"
+
+      # Qt 6.9-6.11 for Android are built against NDK r27. The runner image
+      # ships several; pin r27 rather than taking whatever is newest.
+      - name: Select NDK r27
+        run: |
+          set -euo pipefail
+          ndk=$(ls -d "$ANDROID_SDK_ROOT"/ndk/27.* 2>/dev/null | sort -V | tail -1 || true)
+          if [ -z "$ndk" ]; then
+            echo "NDK r27 not present; installing"
+            "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.2.12479018"
+            ndk="$ANDROID_SDK_ROOT/ndk/27.2.12479018"
+          fi
+          echo "Using NDK at $ndk"
+          echo "ANDROID_NDK_ROOT=$ndk" >> "$GITHUB_ENV"
+
+      - name: Configure
+        run: cmake --preset android-arm64
+
+      - name: Build APK
+        run: cmake --build --preset android-arm64-apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: flipclock-android-arm64
+          path: build/android-arm64/android-build/*.apk
+          if-no-files-found: error
