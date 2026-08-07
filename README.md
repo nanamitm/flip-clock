@@ -5,9 +5,7 @@ A split-flap clock for Windows and Android, built with Qt 6 / C++ and Qt Quick.
 Full-screen flip clock, world clock, alarms, countdown timer and stopwatch, with
 six colour themes and settings that persist across restarts.
 
-<!-- Add once the repository exists on GitHub:
-[![build](https://github.com/OWNER/REPO/actions/workflows/build.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/build.yml)
--->
+[![build](https://github.com/nanamitm/flip-clock/actions/workflows/build.yml/badge.svg)](https://github.com/nanamitm/flip-clock/actions/workflows/build.yml)
 
 | Windows | Android |
 |---|---|
