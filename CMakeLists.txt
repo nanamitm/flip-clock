@@ -21,7 +21,11 @@ endif()
 
 # Qt 6.9 is the floor: Main.qml uses the SafeArea attached type, added in 6.9,
 # to keep content clear of the Android status bar and gesture area.
-find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Quick QuickControls2 QuickShapes Multimedia Svg)
+# QuickShapes is deliberately absent: TimerPage's dial uses Shapes only from
+# QML, so the module is pulled in as a QML plugin by qmlimportscanner at deploy
+# time. Linking it explicitly buys nothing and breaks on Qt builds that do not
+# export a Qt6QuickShapes package (6.9.3 from aqtinstall, for one).
+find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Multimedia Svg)
 
 qt_standard_project_setup(REQUIRES 6.9)
 
@@ -125,7 +129,6 @@ target_link_libraries(appFlipClock PRIVATE
     Qt6::Gui
     Qt6::Quick
     Qt6::QuickControls2
-    Qt6::QuickShapes   # the timer dial's PathAngleArc
     Qt6::Multimedia
     Qt6::Svg           # lets QIcon load the SVG application icon
 )

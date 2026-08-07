@@ -56,8 +56,10 @@ so every component is importable from every other one without extra imports.
 
 - **Qt 6.9 or newer** — desktop kit (`msvc2022_64` on Windows) plus
   `android_arm64_v8a` and/or `android_x86_64` for Android.
-  Modules: Quick, QuickControls2, QuickShapes, Multimedia, Svg.
-  6.9 is the floor because `Main.qml` uses the QML `SafeArea` attached type.
+  The only add-on module beyond a default install is **Qt Multimedia**;
+  Quick, Qt Quick Controls, Qt Quick Shapes and Qt SVG all come with the base
+  kit. 6.9 is the floor because `Main.qml` uses the QML `SafeArea` attached
+  type, added in that release.
 - **Windows**: Visual Studio 2022 or newer with the MSVC v143 x64 toolset.
 - **Android**: SDK platform 35+, build-tools 35+, **NDK r27** (Qt 6.9–6.11 are
   built against it), and a **JDK between 17 and 21** — the Android Gradle
