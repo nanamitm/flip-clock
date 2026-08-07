@@ -33,6 +33,13 @@ qt_add_executable(appFlipClock
     src/main.cpp
 )
 
+if(WIN32)
+    # Gives the .exe its shell icon. The resource script has to be compiled by
+    # the RC toolchain, which is not enabled by a CXX-only project().
+    enable_language(RC)
+    target_sources(appFlipClock PRIVATE assets/icons/appicon.rc)
+endif()
+
 # ---------------------------------------------------------------------------
 # QML module
 #
@@ -97,7 +104,7 @@ set(APP_CPP_SOURCES
 set(APP_RESOURCES
     assets/sounds/alarm.wav
     assets/sounds/timer.wav
-    assets/icons/appicon.svg
+    assets/icons/appicon.png
 )
 
 qt_add_qml_module(appFlipClock

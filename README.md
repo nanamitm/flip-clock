@@ -1,3 +1,5 @@
+<img src="assets/icons/appicon.png" width="96" align="right" alt="">
+
 # Flip Clock
 
 A split-flap clock for Windows and Android, built with Qt 6 / C++ and Qt Quick.
@@ -126,6 +128,7 @@ Minimum supported Android is **API 28**, which is Qt 6.9's own floor.
 | `tools/capture-android.ps1` | Same for a device or emulator, with `-Orientation` to check landscape. |
 | `tools/test-alarm.ps1` | End-to-end alarm check: seeds an alarm a minute out, launches the app, and screenshots the ringing screen. |
 | `tools/generate-sounds.ps1` | Regenerates `assets/sounds/*.wav`. The alert tones are synthesised rather than shipped as opaque binaries, so they carry no third-party licensing. |
+| `tools/generate-icons.ps1` | Regenerates every icon — the Windows `.ico`, the runtime `.png`, and the Android legacy plus adaptive-icon layers — from one geometry description drawn with GDI+. |
 
 ## Architecture
 
@@ -169,9 +172,10 @@ task.
 
 This project is MIT licensed — see [LICENSE](LICENSE).
 
-The alert tones in `assets/sounds/` and the icon in `assets/icons/` are produced
-by this repository's own scripts and source, and no third-party fonts are
-bundled: the digit font is chosen from what the system already has.
+The alert tones in `assets/sounds/`, the icons in `assets/icons/` and the
+Android launcher icons under `android/res/` are all produced by this
+repository's own scripts, and no third-party fonts are bundled: the digit font
+is chosen from what the system already has.
 
 Qt itself is not covered by that licence. Binaries built here link Qt
 dynamically under the **LGPLv3**, which carries its own obligations when you

@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(QStringLiteral(APP_VERSION));
 
     QGuiApplication app(argc, argv);
-    app.setWindowIcon(QIcon(QStringLiteral(":/qt/qml/FlipClock/assets/icons/appicon.svg")));
+    app.setWindowIcon(QIcon(QStringLiteral(":/qt/qml/FlipClock/assets/icons/appicon.png")));
 
     // Pin the Controls style so Windows and Android render identically; the
     // platform default styles disagree on padding, colours and font metrics.

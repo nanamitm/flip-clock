@@ -1,0 +1,6 @@
+// Gives the Windows executable its Explorer / taskbar icon.
+//
+// The lowest numeric ID wins when the shell picks an application icon, so this
+// stays at 1. Qt's own runtime icon is set separately in main.cpp; this one is
+// what shows before the process starts.
+1 ICON "appicon.ico"
