@@ -43,7 +43,18 @@ ApplicationWindow {
     Binding { target: WorldClockModel; property: "use24Hour"; value: AppSettings.use24Hour }
     Binding { target: AlarmModel; property: "use24Hour"; value: AppSettings.use24Hour }
     Binding { target: ThemeManager; property: "themeId"; value: AppSettings.themeId }
-    Binding { target: ScreenAwake; property: "enabled"; value: AppSettings.keepScreenOn }
+
+    Binding {
+        target: ScreenAwake
+        property: "enabled"
+        // Scoped to the window actually being on screen. Android already ties
+        // FLAG_KEEP_SCREEN_ON to window visibility, but Windows keeps a
+        // SetThreadExecutionState request alive for the whole process, so
+        // without this a minimised clock would go on blocking display sleep.
+        value: AppSettings.keepScreenOn
+               && app.visible
+               && app.visibility !== Window.Minimized
+    }
 
     // Android freezes the process while backgrounded, so the pending tick
     // fires late on return. Resynchronise instead of crawling back up to the
