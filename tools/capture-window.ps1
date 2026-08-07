@@ -61,6 +61,25 @@ public class Win32Window {
     [DllImport("user32.dll")]
     public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
 
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmGetWindowAttribute(IntPtr hWnd, int attribute,
+        out RECT value, int size);
+
+    private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+
+    // GetWindowRect includes the invisible resize border DWM adds around a
+    // window, so capturing it drags in a sliver of whatever sits behind.
+    // The extended frame bounds are the actual painted edges.
+    public static RECT GetVisibleBounds(IntPtr hWnd) {
+        RECT rect;
+        if (DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS,
+                out rect, Marshal.SizeOf(typeof(RECT))) == 0) {
+            return rect;
+        }
+        GetWindowRect(hWnd, out rect);
+        return rect;
+    }
+
     [DllImport("user32.dll")]
     public static extern bool SetCursorPos(int x, int y);
 
@@ -113,8 +132,7 @@ try {
 
     Start-Sleep -Milliseconds 900
 
-    $rect = New-Object Win32Window+RECT
-    [Win32Window]::GetWindowRect($hwnd, [ref]$rect) | Out-Null
+    $rect = [Win32Window]::GetVisibleBounds($hwnd)
     $w = $rect.Right - $rect.Left
     $h = $rect.Bottom - $rect.Top
 
