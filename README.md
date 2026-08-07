@@ -25,7 +25,8 @@ More: [world clock](docs/screenshots/android-world.png),
 | **Alarm** | Multiple alarms, per-weekday repeat or one-shot, label, snooze interval. A full-screen takeover rings with Snooze and Dismiss. See [Alarm limitations](#alarm-limitations). |
 | **Timer** | Countdown with presets, pause/resume, +1 min, and a progress ring. |
 | **Stopwatch** | 1/100 s resolution with laps, fastest and slowest highlighted. |
-| **Appearance** | Six themes (Midnight, Charcoal, Amber, Neon, Paper, Ocean), digit font selection, split-flap / fade / no animation, keep-screen-on. |
+| **Appearance** | Six themes (Midnight, Charcoal, Amber, Neon, Paper, Ocean), digit font selection, split-flap / fade / no animation. |
+| **Keep screen on** | On by default, so a clock left on a desk stays readable. The request is scoped to the window being on screen — minimising or backgrounding the app releases it — and can be turned off in Settings. |
 
 ## Repository layout
 

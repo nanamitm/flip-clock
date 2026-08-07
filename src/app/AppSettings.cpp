@@ -36,7 +36,10 @@ AppSettings::AppSettings(QObject *parent)
     m_use24Hour = m_settings.value(QString::fromLatin1(kUse24Hour), localePrefers24Hour()).toBool();
     m_showSeconds = m_settings.value(QString::fromLatin1(kShowSeconds), true).toBool();
     m_showDate = m_settings.value(QString::fromLatin1(kShowDate), true).toBool();
-    m_keepScreenOn = m_settings.value(QString::fromLatin1(kKeepScreenOn), false).toBool();
+    // On by default: a clock left on a desk or a bedside table is only useful
+    // if it stays readable. The request is scoped to the window being on
+    // screen, so it costs nothing once the app is put away.
+    m_keepScreenOn = m_settings.value(QString::fromLatin1(kKeepScreenOn), true).toBool();
     m_themeId = m_settings.value(QString::fromLatin1(kThemeId), QStringLiteral("midnight")).toString();
     m_fontFamily = m_settings.value(QString::fromLatin1(kFontFamily), QString()).toString();
     m_flipStyle = static_cast<FlipStyle>(
