@@ -2,9 +2,7 @@ name: build
 
 on:
   push:
-    branches: [main]
-  pull_request:
-  workflow_dispatch:
+    tags: ['*']
 
 # The CMake presets resolve Qt through QT_DIR_DESKTOP / QT_DIR_ANDROID_*.
 # install-qt-action exports QT_ROOT_DIR for the kit it just installed, so each
