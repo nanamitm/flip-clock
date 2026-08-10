@@ -28,6 +28,13 @@ class AppSettings : public QObject
     Q_PROPERTY(QString fontFamily READ fontFamily WRITE setFontFamily NOTIFY fontFamilyChanged FINAL)
     Q_PROPERTY(FlipStyle flipStyle READ flipStyle WRITE setFlipStyle NOTIFY flipStyleChanged FINAL)
     Q_PROPERTY(qreal digitScale READ digitScale WRITE setDigitScale NOTIFY digitScaleChanged FINAL)
+    Q_PROPERTY(bool compactMode READ compactMode WRITE setCompactMode NOTIFY compactModeChanged FINAL)
+    Q_PROPERTY(bool alwaysOnTop READ alwaysOnTop WRITE setAlwaysOnTop NOTIFY alwaysOnTopChanged FINAL)
+    Q_PROPERTY(bool clickThrough READ clickThrough WRITE setClickThrough NOTIFY clickThroughChanged FINAL)
+    Q_PROPERTY(qreal compactOpacity READ compactOpacity WRITE setCompactOpacity NOTIFY compactOpacityChanged FINAL)
+    Q_PROPERTY(bool hasCompactPosition READ hasCompactPosition NOTIFY compactPositionChanged FINAL)
+    Q_PROPERTY(int compactX READ compactX WRITE setCompactX NOTIFY compactPositionChanged FINAL)
+    Q_PROPERTY(int compactY READ compactY WRITE setCompactY NOTIFY compactPositionChanged FINAL)
     Q_PROPERTY(int lastTimerSeconds READ lastTimerSeconds WRITE setLastTimerSeconds NOTIFY lastTimerSecondsChanged FINAL)
     Q_PROPERTY(QStringList availableFontFamilies READ availableFontFamilies CONSTANT FINAL)
 
@@ -65,6 +72,24 @@ public:
     qreal digitScale() const { return m_digitScale; }
     void setDigitScale(qreal value);
 
+    bool compactMode() const { return m_compactMode; }
+    void setCompactMode(bool value);
+
+    bool alwaysOnTop() const { return m_alwaysOnTop; }
+    void setAlwaysOnTop(bool value);
+
+    bool clickThrough() const { return m_clickThrough; }
+    void setClickThrough(bool value);
+
+    qreal compactOpacity() const { return m_compactOpacity; }
+    void setCompactOpacity(qreal value);
+
+    bool hasCompactPosition() const { return m_hasCompactPosition; }
+    int compactX() const { return m_compactX; }
+    void setCompactX(int value);
+    int compactY() const { return m_compactY; }
+    void setCompactY(int value);
+
     int lastTimerSeconds() const { return m_lastTimerSeconds; }
     void setLastTimerSeconds(int value);
 
@@ -79,6 +104,11 @@ Q_SIGNALS:
     void fontFamilyChanged();
     void flipStyleChanged();
     void digitScaleChanged();
+    void compactModeChanged();
+    void alwaysOnTopChanged();
+    void clickThroughChanged();
+    void compactOpacityChanged();
+    void compactPositionChanged();
     void lastTimerSecondsChanged();
 
 private:
@@ -95,5 +125,12 @@ private:
     QString m_fontFamily;
     FlipStyle m_flipStyle;
     qreal m_digitScale;
+    bool m_compactMode;
+    bool m_alwaysOnTop;
+    bool m_clickThrough;
+    qreal m_compactOpacity;
+    bool m_hasCompactPosition;
+    int m_compactX;
+    int m_compactY;
     int m_lastTimerSeconds;
 };

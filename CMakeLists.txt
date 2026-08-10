@@ -27,6 +27,10 @@ endif()
 # export a Qt6QuickShapes package (6.9.3 from aqtinstall, for one).
 find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Multimedia Svg)
 
+if(WIN32)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Widgets)
+endif()
+
 qt_standard_project_setup(REQUIRES 6.9)
 
 qt_add_executable(appFlipClock
@@ -56,6 +60,7 @@ set(APP_QML_FILES
     qml/clock/FlipCard.qml
     qml/clock/FlipGroup.qml
     qml/clock/FlipClockPage.qml
+    qml/clock/DesktopClockPage.qml
     qml/clock/WorldClockPage.qml
     qml/clock/TimeZonePickerSheet.qml
 
@@ -85,6 +90,7 @@ endforeach()
 
 set(APP_CPP_SOURCES
     src/app/AppSettings.h            src/app/AppSettings.cpp
+    src/app/DesktopController.h      src/app/DesktopController.cpp
     src/app/ScreenAwake.h            src/app/ScreenAwake.cpp
     src/theme/ThemeManager.h         src/theme/ThemeManager.cpp
     src/clock/ClockController.h      src/clock/ClockController.cpp
@@ -139,6 +145,10 @@ target_link_libraries(appFlipClock PRIVATE
     Qt6::Multimedia
     Qt6::Svg           # lets QIcon load the SVG application icon
 )
+
+if(WIN32)
+    target_link_libraries(appFlipClock PRIVATE Qt6::Widgets)
+endif()
 
 set_target_properties(appFlipClock PROPERTIES
     WIN32_EXECUTABLE TRUE

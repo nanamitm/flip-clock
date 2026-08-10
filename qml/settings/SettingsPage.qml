@@ -68,6 +68,30 @@ Item {
                 }
             }
 
+            SettingSection { title: qsTr("Desktop accessory") }
+
+            SettingRow {
+                label: qsTr("Compact flip clock")
+                description: qsTr("A borderless, resizable desktop clock with flip cards")
+
+                ThemedSwitch {
+                    enabled: Qt.platform.os === "windows"
+                    checked: AppSettings.compactMode
+                    onToggled: AppSettings.compactMode = checked
+                }
+            }
+
+            SettingRow {
+                label: qsTr("Always on top")
+                description: qsTr("Keeps the compact clock visible above other windows")
+
+                ThemedSwitch {
+                    enabled: Qt.platform.os === "windows"
+                    checked: AppSettings.alwaysOnTop
+                    onToggled: AppSettings.alwaysOnTop = checked
+                }
+            }
+
             SettingSection { title: qsTr("Appearance") }
 
             SettingRow {

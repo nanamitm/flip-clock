@@ -13,6 +13,12 @@ constexpr auto kThemeId = "appearance/themeId";
 constexpr auto kFontFamily = "appearance/fontFamily";
 constexpr auto kFlipStyle = "appearance/flipStyle";
 constexpr auto kDigitScale = "appearance/digitScale";
+constexpr auto kCompactMode = "desktop/compactMode";
+constexpr auto kAlwaysOnTop = "desktop/alwaysOnTop";
+constexpr auto kClickThrough = "desktop/clickThrough";
+constexpr auto kCompactOpacity = "desktop/compactOpacity";
+constexpr auto kCompactX = "desktop/compactX";
+constexpr auto kCompactY = "desktop/compactY";
 constexpr auto kLastTimerSeconds = "timer/lastSeconds";
 
 } // namespace
@@ -45,6 +51,14 @@ AppSettings::AppSettings(QObject *parent)
     m_flipStyle = static_cast<FlipStyle>(
         m_settings.value(QString::fromLatin1(kFlipStyle), static_cast<int>(SplitFlap)).toInt());
     m_digitScale = m_settings.value(QString::fromLatin1(kDigitScale), 1.0).toDouble();
+    m_compactMode = m_settings.value(QString::fromLatin1(kCompactMode), false).toBool();
+    m_alwaysOnTop = m_settings.value(QString::fromLatin1(kAlwaysOnTop), true).toBool();
+    m_clickThrough = m_settings.value(QString::fromLatin1(kClickThrough), false).toBool();
+    m_compactOpacity = m_settings.value(QString::fromLatin1(kCompactOpacity), 1.0).toDouble();
+    m_hasCompactPosition = m_settings.contains(QString::fromLatin1(kCompactX))
+        && m_settings.contains(QString::fromLatin1(kCompactY));
+    m_compactX = m_settings.value(QString::fromLatin1(kCompactX), 0).toInt();
+    m_compactY = m_settings.value(QString::fromLatin1(kCompactY), 0).toInt();
     m_lastTimerSeconds = m_settings.value(QString::fromLatin1(kLastTimerSeconds), 300).toInt();
 
     // Guard against a settings file hand-edited (or written by a future
@@ -52,6 +66,7 @@ AppSettings::AppSettings(QObject *parent)
     if (m_flipStyle < SplitFlap || m_flipStyle > Instant)
         m_flipStyle = SplitFlap;
     m_digitScale = qBound(0.4, m_digitScale, 1.0);
+    m_compactOpacity = qBound(0.55, m_compactOpacity, 1.0);
     if (m_lastTimerSeconds <= 0)
         m_lastTimerSeconds = 300;
 }
@@ -106,6 +121,46 @@ void AppSettings::setFlipStyle(FlipStyle value)
 void AppSettings::setDigitScale(qreal value)
 {
     FC_STORE(m_digitScale, kDigitScale, digitScaleChanged, qBound(0.4, value, 1.0));
+}
+
+void AppSettings::setCompactMode(bool value)
+{
+    FC_STORE(m_compactMode, kCompactMode, compactModeChanged, value);
+}
+
+void AppSettings::setAlwaysOnTop(bool value)
+{
+    FC_STORE(m_alwaysOnTop, kAlwaysOnTop, alwaysOnTopChanged, value);
+}
+
+void AppSettings::setClickThrough(bool value)
+{
+    FC_STORE(m_clickThrough, kClickThrough, clickThroughChanged, value);
+}
+
+void AppSettings::setCompactOpacity(qreal value)
+{
+    FC_STORE(m_compactOpacity, kCompactOpacity, compactOpacityChanged, qBound(0.55, value, 1.0));
+}
+
+void AppSettings::setCompactX(int value)
+{
+    if (m_compactX == value && m_hasCompactPosition)
+        return;
+    m_compactX = value;
+    m_hasCompactPosition = true;
+    m_settings.setValue(QString::fromLatin1(kCompactX), value);
+    Q_EMIT compactPositionChanged();
+}
+
+void AppSettings::setCompactY(int value)
+{
+    if (m_compactY == value && m_hasCompactPosition)
+        return;
+    m_compactY = value;
+    m_hasCompactPosition = true;
+    m_settings.setValue(QString::fromLatin1(kCompactY), value);
+    Q_EMIT compactPositionChanged();
 }
 
 void AppSettings::setLastTimerSeconds(int value)

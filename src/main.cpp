@@ -1,4 +1,8 @@
-#include <QGuiApplication>
+#ifdef _WIN32
+#  include <QApplication>
+#else
+#  include <QGuiApplication>
+#endif
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
@@ -12,7 +16,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(QStringLiteral("FlipClock"));
     QCoreApplication::setApplicationVersion(QStringLiteral(APP_VERSION));
 
+#ifdef _WIN32
+    QApplication app(argc, argv);
+#else
     QGuiApplication app(argc, argv);
+#endif
     app.setWindowIcon(QIcon(QStringLiteral(":/qt/qml/FlipClock/assets/icons/appicon.png")));
 
     // Pin the Controls style so Windows and Android render identically; the

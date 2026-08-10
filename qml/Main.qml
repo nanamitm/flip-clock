@@ -8,14 +8,35 @@ ApplicationWindow {
 
     width: 1080
     height: 660
-    minimumWidth: 320
-    minimumHeight: 460
+    minimumWidth: AppSettings.compactMode ? 300 : 320
+    minimumHeight: AppSettings.compactMode ? 130 : 460
     visible: true
     title: qsTr("Flip Clock")
     color: ThemeManager.background
+    flags: AppSettings.compactMode && Qt.platform.os === "windows"
+           ? Qt.FramelessWindowHint
+             | (AppSettings.alwaysOnTop ? Qt.WindowStaysOnTopHint : 0)
+             | (AppSettings.clickThrough ? Qt.WindowTransparentForInput : 0)
+           : Qt.Window
+    opacity: AppSettings.compactMode && Qt.platform.os === "windows" ? AppSettings.compactOpacity : 1.0
 
     //! Hidden on the clock page for an unobstructed display; tap to bring back.
     property bool chromeVisible: true
+    property bool restoringCompactPosition: false
+    property bool compactPositionReady: false
+    // The accessory opens at a compact but readable desk-clock size every
+    // time.  Keeping this fixed avoids a tiny or oversized window being
+    // carried over from a temporary resize on a different monitor.
+    function useDefaultCompactGeometry() {
+        width = 380
+        height = 150
+        if (AppSettings.hasCompactPosition) {
+            restoringCompactPosition = true
+            x = AppSettings.compactX
+            y = AppSettings.compactY
+            restoringCompactPosition = false
+        }
+    }
 
     Behavior on color {
         ColorAnimation { duration: 240 }
@@ -76,6 +97,60 @@ ApplicationWindow {
             : Window.FullScreen
     }
 
+    Connections {
+        target: AppSettings
+        function onCompactModeChanged() {
+            if (AppSettings.compactMode) {
+                app.useDefaultCompactGeometry()
+                app.compactPositionReady = true
+            } else {
+                app.width = 1080
+                app.height = 660
+            }
+        }
+    }
+
+    // Accessing the singleton instantiates the Windows notification-area
+    // icon.  Its menu remains reachable when the compact window is set to
+    // click-through, so that mode can never strand the user.
+    Connections {
+        target: DesktopController
+        function onShowCompactRequested() {
+            AppSettings.clickThrough = false
+            AppSettings.compactMode = true
+            app.show()
+            app.raise()
+            app.requestActivate()
+        }
+        function onOpenFullAppRequested() {
+            AppSettings.clickThrough = false
+            AppSettings.compactMode = false
+            app.show()
+            app.raise()
+            app.requestActivate()
+        }
+        function onDisableClickThroughRequested() {
+            AppSettings.clickThrough = false
+        }
+        function onQuitRequested() { Qt.quit() }
+    }
+
+    Component.onCompleted: {
+        if (AppSettings.compactMode && Qt.platform.os === "windows")
+            useDefaultCompactGeometry()
+        compactPositionReady = true
+    }
+
+    onXChanged: {
+        if (AppSettings.compactMode && compactPositionReady && !restoringCompactPosition)
+            AppSettings.compactX = x
+    }
+
+    onYChanged: {
+        if (AppSettings.compactMode && compactPositionReady && !restoringCompactPosition)
+            AppSettings.compactY = y
+    }
+
     Shortcut {
         sequence: "Esc"
         onActivated: {
@@ -97,6 +172,7 @@ ApplicationWindow {
     }
 
     ColumnLayout {
+        visible: !AppSettings.compactMode || Qt.platform.os !== "windows"
         anchors.fill: parent
         spacing: 0
 
@@ -152,6 +228,11 @@ ApplicationWindow {
                 NumberAnimation { duration: 200; easing.type: Easing.InOutQuad }
             }
         }
+    }
+
+    DesktopClockPage {
+        anchors.fill: parent
+        visible: AppSettings.compactMode && Qt.platform.os === "windows"
     }
 
     // ---- ringing alarm -----------------------------------------------------
