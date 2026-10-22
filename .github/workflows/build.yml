@@ -51,7 +51,7 @@ jobs:
         run: cmake --build --preset windows-msvc-release
 
       - name: Upload executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: flipclock-windows-x64
           path: build/windows-msvc-release/appFlipClock.exe
@@ -120,7 +120,7 @@ jobs:
         run: cmake --build --preset android-arm64-apk
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: flipclock-android-arm64
           path: build/android-arm64/android-build/*.apk
